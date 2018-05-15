@@ -35,6 +35,6 @@ def new_topic(request):
     form = TopicForm(request.POST or None)
     if form.is_valid():
         form.save()
-        return redirect('learning_logs/topics')
+        return redirect('learning_logs:topics')
     else:
         return render(request, 'learning_logs/new_topic.html', {'form': form})
