@@ -3,17 +3,26 @@
 {% block content %}
   <p>Topic: {{ topic }}</p>
   <p>Entries:</p>
+  <!-- Adicionamos o link antes de mostrar as entradas, pois acrescentar nova
+       entrada será a ação mais comum nessa página. -->
   <p><a href="{% url 'learning_logs:new_entry' topic.id %}">Add new entry</a></p>
   <ul>
+
+    <!-- Fazemos um for nas entradas para listar separadamente cada uma. -->
     {% for entry in entries %}
       <li>
         <!-- Em Django uma linha vertical (|) representa um filtro de template
              Uma função que modifica o valor de uma variável de template.-->
         <p>{{ entry.date_added | date:'M d, Y H:i' }}</p>
-        <p>{{ entry.text | linebreaks }}</p>
+
         <!-- O filtro linebreaks garante que entradas com texto longo incluam
-             quebras de linha em um formato compreensível pelos navegadores,
-             em vezv mostrar um bloco de texto contínuo. -->
+        quebras de linha em um formato compreensível pelos navegadores,
+        em vezv mostrar um bloco de texto contínuo. -->
+        <p>{{ entry.text | linebreaks }}</p>
+        <p>
+          <a href="{% url 'learning_logs:edit_entry' entry.id %}">Edit entry<a>
+        </p>
+
       </li>
       {% empty %}
       <li> There are no entries for this topic yet.</li>
