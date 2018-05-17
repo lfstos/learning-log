@@ -1,0 +1,27 @@
+{% extends "learning_logs/base.html" %}
+
+{% block content %}
+
+  <!-- Dentro do action, na url passamos topic_id, para que na view possa
+      associar a nova entrada ao assunto correto. -->
+  <p><a href="{% url 'learning_logs:topic' topic.id %}">{{ topic }}</a></p>
+  <p> Edit entry:</p>
+  <form action="{% url 'learning_logs:edit_entry' entry.id %}" method="post">
+
+    <!-- o Django usa a tag {% csrf_token %} para evitar que invasores usem o
+         formulário a fim de terem acesso ao servidor -->
+    {% csrf_token %}
+
+    <!-- Nesse ponto exibimos o formulário. Basta incluirmos a variável de
+         de template {{ form.as_p }}para que o framework cire todos os campos
+         necessários e exiba o formulário automaticamente. O modificador as_p
+         diz ao Django para renderizar todos os elementos do formulário em
+         formato de parágrafo, que é uma maneira simples de exibir o formulário
+         de modo organizado. -->
+    {{ form.as_p }}
+
+    <!-- O Django não cria um botão de submissão para os formulário, portanto
+         definimos um em seguida -->
+    <button name="submit">Save changes</button>
+  </form>
+{% endblock content %}
