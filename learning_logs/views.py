@@ -1,21 +1,26 @@
-from django.shortcuts import render, redirect
 # render renderiza a resposta de acordo com os dados fornecidos pelas views.
 # redirect redireciona para a página selecionada.
+from django.shortcuts import render, redirect
 
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 
-from .models import Topic
 # Importando o modelo associado que precisamos
+from .models import Topic, Entry
+
+# Importamos os formulários
 from .forms import TopicForm, EntryForm
 
 
+# Request pe um objeto de requisição.
 def index(request):
     """A página inicial de learning_logs."""
     # A função render utiliza dois argumentos, o objeto request original e um
     # template que pode ser usado para construir a página.
     return render(request, 'learning_logs/index.html')
 
+
+# Request pe um objeto de requisição.
 def topics(request):
     """Mostra todos os assuntos."""
     topics = Topic.objects.order_by('date_added')
@@ -23,6 +28,8 @@ def topics(request):
     # com o atributo date_added. Armazenamos o queryset resultante em topics.
     return render(request, 'learning_logs/topics.html', {'topics': topics})
 
+
+# Request pe um objeto de requisição.
 def topic(request, topic_id):
     """Mostra um assunto e todas as suas entradas."""
     topic = Topic.objects.get(id=topic_id)
@@ -33,14 +40,32 @@ def topic(request, topic_id):
     return render(request, 'learning_logs/topic.html', {'topic': topic,
                                                         'entries': entries})
 
+# Request pe um objeto de requisição.
+# A função de new_topic() deve tratar duas situações diferentes:
+# Requisições iniciais para a página new_topic(caso em que o formulário em
+# branco deverá ser mostrado) e o processamento de qualquer dado submetido
+# no formulário que será redirecionado para learning_logs:topics.
 def new_topic(request):
     """Adiciona um novo assunto."""
     form = TopicForm(request.POST or None)
+    # Não podemos salvar as informações submetidas no banco de dados antes de
+    # verificar se são válidas. A função is_valid() verifica se todos os campos
+    # necessários são preenchidos(todos os campos em um formulário são
+    # obrigatórios por padrão) e se os dados fornecidos são do tipo esperado
+    # para o campo.
     if form.is_valid():
+        # Se tudo estiver válido, chamamos save(), que grava os dados do
+        # formulário no banco de dados.
         form.save()
         return redirect('learning_logs:topics')
-    else:
-        return render(request, 'learning_logs/new_topic.html', {'form': form})
+    # Criamos uma instância de TopicForm, armazenamos essa instância em uma
+    # variável form e enviamos o formulario para o template no dicionário de
+    # contexto. Como não incluímos nenhum argumento ao instânciar TopicForm,
+    # o Django cria um formulário em branco que o usuário poderá preencher.
+    form = TopicForm()
+    # Caso seja a primeira requisição, para criação de um novo topic.
+    return render(request, 'learning_logs/new_topic.html', {'form': form})
+
 
 def new_entry(request, topic_id):
     """Acrescenta uma nova entrada para um assunto em particular."""
@@ -65,7 +90,7 @@ def new_entry(request, topic_id):
         new_entry.topic = topic
 
         # Chamamos save sem argumentos, essa instrução salva a entrada no banco
-        # de dados com o assunto correto associado.
+        # de dados com o assunto associado.
         new_entry.save()
         return HttpResponseRedirect(reverse('learning_logs:topic',
                                                               args=[topic_id]))
@@ -77,3 +102,34 @@ def new_entry(request, topic_id):
 
     return render(request, 'learning_logs/new_entry.html', {'topic': topic,
                                                             'form': form })
+
+
+def edit_entry(request, entry_id):
+    """Edita uma entrada existente."""
+    # Adquirimos o objeto da entrada que o usuário quer editar e o assunto
+    # associado a essa entrada.
+    entry = Entry.objects.get(id=entry_id)
+    topic = entry.topic
+
+    if request.method != 'POST':
+        # Criamos uma instância de EntryForm com o argumento instance=entry
+        # Esse argumento diz ao Django para criar o formulário previamente preenchido
+        # com informações do objeto de entrada existente. O usuário verá os dados
+        # existentes e poderá editá-los
+        form = EntryForm(instance=entry)
+    else:
+        # Ao processar uma requisição POST, passamos os argumentos
+        # instance=entry e data=request.POST para dizer ao Django que crie uma
+        # instância de formulário baseada nas informações associadas ao objeto
+        # de entrada existente, atualizando com qualquer dado relevante de
+        #request.POST.
+        form = EntryForm(instance=entry, data=request.POST)
+
+        # Se veio POST, validamos a requisição para ver se está tudo certo.
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('learning_logs:topic',
+                                                            args=[topic.id]))
+    return render(request, 'learning_logs/edit_entry.html', {'entry': entry,
+                                                             'topic': topic,
+                                                             'form': form})
