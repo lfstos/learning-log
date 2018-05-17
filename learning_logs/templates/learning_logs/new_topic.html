@@ -1,0 +1,27 @@
+{% extends "learning_logs/base.html" %}
+
+{% block content %}
+  <p>Add new topic:</p>
+  <!-- Definição de um formulário HTML
+       O argumento action diz ao servidor para qual lugar devem ser enviados
+       os dados submetidos no formulário; nesse caso, eles serão enviados para
+       a função view new_topic(). O argumento method diz ao navegador para
+       submeter os dados com uma requisição POST. -->
+  <form action="{% url 'learning_logs:new_topic' %}" method="post">
+    <!-- O Django usa a tag {% csrf_token %} para evitar que invasores usem o
+    formulálrio a fim de ter acesso não autorizado ao servidor -->
+    {% csrf_token %}
+
+    <!-- Nesse ponto exibimos o formulário. Basta incluirmos a variável de
+    template {{form.as_p}} para que o framework crie todos os campos
+    necessários e exiba o formulário automaticamente. O modificador as_p
+    diz ao Django para renderizar todos os elementos do formulário em
+    formato de parágrafo, que é uma maneira simples de exibir o formulário
+    de modo organizado. -->
+    {{ form.as_p }}
+
+    <!-- O Django não cria um botão de submissão para os formulários,
+    portanto definimos um em seguida. -->
+    <button name="submit">Add topic</button>
+  </form>
+{% endblock content %}
