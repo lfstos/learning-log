@@ -1,0 +1,32 @@
+{% extends "learning_logs/base.html" %}
+
+{% block content %}
+<!-- Mostramos o assunto para que o usuário saiba para que assunto está sendo
+     criada a entrada. Esse item também atua como um link de volta para a página
+     principal desse assunto -->
+  <p><a href="{% url 'learning_logs:topic' topic.id %}">{{ topic }}</a></p>
+
+  <p>Add a new entry:</p>
+
+  <!-- O argumento action do fomrilário inclui o valor topic_id no URL para
+       que a função da view possa associar a nova entrada ao assunto correto -->
+  <form action="{% url 'learning_logs:new_entry' topic.id%}" method="post">
+
+    <!-- Para evitar que invasores usem o formulário a fim de ter acesso não
+    autorizado ao servidor -->
+    {% csrf_token %}
+
+    {{ form.as_p }}
+    <!-- Nesse ponto podemos ver como o Django simplica a execução de tarefas
+         como a exibição de um formulário. Basta incluir a variável de template
+         {{ form.as_p }} para que o framework crie todos os campos necessário e
+         exiba o formulário automaticamente. O modificador as_p diz ao Django
+         para renderizar todos os elementos do formulário em formato de
+         parágrafo, que é uma maneira simples de exibir o formulário de modo
+         organizado. -->
+
+    <!-- O Django não cria um botão de submissão para os formulários, portanto
+         definimos a seguir -->
+    <button name='submit'>Add entry</button>
+  </form>
+{% endblock content %}
