@@ -14,7 +14,7 @@ urlpatterns = [
     # default de Django(observe que o argumento da view é login, e não
     # views.login).Como não estamos escrevendo nossa própria função de view,
     # passamos um dicionário que diz ao Django em que lugar ele poderá encontrar
-    # o template que estamos prestes a escrever. Esse template fará parte da
-    # aplicação users, e não de learning_logs.
+    # o template de login. Esse template fará parte da aplicação users, e não de
+    # learning_logs.
     path('login/', login, {'template_name': 'users/login.html'}, name='login'),
 ]
