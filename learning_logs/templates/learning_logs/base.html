@@ -1,6 +1,96 @@
-<p>
-  <a href="{% url 'learning_logs:index' %}">Learning Log</a> -
-  <a href="{% url 'learning_logs:topics' %}">Topics</a>
-</p>
+<!-- Carregamos a coleção de tags de template disponíveis em
+     django-bootstrap3 -->
+{% load bootstrap3 %}
 
-{% block content %} {% endblock content %}
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Learning Log</title>
+
+    <!-- Usamos uma das tags de template personalizadas de django-bootstrap3,
+         que diz ao Django para incluir todos os arquivos de estilização do
+         Bootstrap -->
+    {% bootstrap_css %}
+
+    <!-- Habilita todos o comportamento interativo que possa ser usado em uma
+         página, por exemplo, barra de navegação possíveis de serem
+         contraídas -->
+    {% bootstrap_javascript %}
+  </head>
+
+  <!-- Definindo a barra de navegação. -->
+  <body>
+    <!-- Static navbar -->
+
+    <!-- O elemento <nav> que representa a seção de links de naveação da
+         página. Tudo que estiver nesse elemento será estilizado de acrodo com
+         as regras de estilo do Bootstrap definidas pelos seletores navbar,
+         navbar-default e navbar-static-top. Um seletor determina a quais
+         elementos de uma página uma determinada regra de estilo se aplica. -->
+    <nav class="navbar navbar-default navbar-static-top">
+      <div class="container">
+        <div class="navbar-header">
+
+          <!-- O template define um botão que aparecerá se a janela do
+               navegador for estreita demais para exibir toda a barra de
+               navagação horizontalmente. Quando o usuário clicar no botão, os
+               elementos de navegação aparecerao em uma lista suspensa. A
+               referência collapse faz a barra de navegação ser contraída
+               quandoo usuário reduzir a janela do navegador ou quando o site
+               for exibido em dispositivos móveis, com telas menores. -->
+          <button type="button" class="navbar-toggle collapsed"
+            data-toggle="collapse" data-target="#navbar"
+            aria-expanded="false" aria-controls="navbar">
+          </button>
+
+          <!-- Configuramos o nome do projeto para que apareça na extremidade
+               esquerda da barra de navegação e fizemos dele um link para a
+               página inicial, pois essa informação aparecerá em todas as
+               páginas do projeto. -->
+          <a class="navbar-brand" href="{% url 'learning_logs:index' %}">
+            Learning Log
+          </a>
+        </div>
+
+        <!-- Definimos um conjunto de links qe permite aos usuarios navegar
+             pelo site. Uma barra de navegação é basicamente uma lista que
+             começa com <ul> -->
+        <div id="navbar" class="navbar-collapse collapse">
+
+          <!-- Cada link é um item dessa lista(<li>). -->
+          <ul class="nav navbar-nav">
+
+            <!-- Para acrescentar mais links, insirimos outras linhas usando a
+                 estrutura a seguir. -->
+            <li><a href="{% url 'learning_logs:topics' %}">Topics</a></li>
+          </ul>
+
+          <!-- Colocamos uma segunda lista de links de navegação, dessa vez
+               usando um seletor navbar-right. Esse seletor estliza o conjunto
+               de links par que ele apareça na borda direita da barra de
+               navegação, em um local em que você normalmente vê links para
+               login e para cadastramento. Nesse caso, exibiremos a saudação ao
+               usuário e o link para logout ou os links para cadastramento ou
+               login. -->
+          <ul class="nav navbar-nav navbar-right">
+            {% if user.is_authenticated %}
+              <li><a>Hello, {{ user.username }}.</a></li>
+              <li><a href="{% url 'users:logout' %}">Log out</a></li>
+            {% else %}
+              <li><a href="{% url 'users:register' %}">Register</a></li>
+              <li><a href="{% url 'users:login' %}">Log in</a></li>
+            {% endif %}
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+    <!-- Definindo a parte principal da página. -->
+    <div class="container">
+      <div class="page-header">
+        {% block header %} {% endblock header %}
+      </div>
+      <div>{% block content %} {% endblock content %}</div>
+    </div> <!-- /container -->
+  </body>
+</html>
