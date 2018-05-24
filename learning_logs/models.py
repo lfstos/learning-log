@@ -1,24 +1,28 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # Onde criaremos nosso próprios modelos.
 # Um modelo diz ao Django como trabalhar com os dados que serão armazenados na
-# aplicação. Do ponto de vista do código, um modelo é apenas uma classe; ele tem
-# atributos e métodos, assim como todas as classes.
+# aplicação. Do ponto de vista do código, um modelo é apenas uma classe;
+# ele tem atributos e métodos, assim como todas as classes.
+# Criamos uma classe Topic, que herda de Model - uma classe pai incluída em
+# Django, que define a funcionalidade básica de um modelo. A classe Topic tem
+# apenas dois atributos, text e date_added.
 
-# Criamos uma classe Topic, que herda de Model - uma classe pai incluída em Django,
-# que define a funcionalidade básica de um modelo. A classe Topic tem apenas dois
-# atributos, text e date_added.
 
 class Topic(models.Model):
     """Um assunto sobre o qual o usuário está aprendendo."""
     text = models.CharField(max_length=200)
     date_added = models.DateTimeField(auto_now_add=True)
+    # Vincula o topic que está sendo criado com o autor.
+    owner = models.ForeignKey(User, on_delete=True)
 
     def __str__(self):
         """Devolve uma representação em string do modelo Topic."""
         return self.text
         # Esse atributo é utilizado como default quando ele exibir informações
         # sobre o assunto.
+
 
 class Entry(models.Model):
     """Algo específico aprendido sobre um assunto."""
