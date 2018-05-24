@@ -31,9 +31,10 @@ class Entry(models.Model):
     date_added = models.DateTimeField(auto_now_add=True)
     class Meta: verbose_name_plural = 'entries'
     # A classe Meta armazena informações extras para administrar um modelo;
-    # nesse caso, ela nos permite definir um atributo especial que diz ao Django
-    # para usar Entries quando precisar se referir a mais de uma entrada.
-    # (Sem isso, Django iria referenciar várias entradas como Entrys).
+    # nesse caso, ela nos permite definir um atributo especial que diz ao
+    # Django para usar Entries quando precisar se referir a mais de uma
+    # entrada. (Sem isso, Django iria referenciar várias entradas como Entrys).
+    #
 
     def __str__(self):
         if len(self.text) > 50:
