@@ -24,6 +24,9 @@ INSTALLED_APPS = [
     # Minhas aplicações.
     'learning_logs',
     'users',
+
+    # Aplicação do Bootstrap3
+    'bootstrap3'
 ]
 
 MIDDLEWARE = [
@@ -105,3 +108,18 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+# Configuração para redirecionamento, caso o usuário não esteja logado, para
+# o sistema saber para onde fará o redirecionamento.
+# Agora, quando um usuário não autenticado solicitar uma página protegida pelo
+# decorador @login_required, o Django enviará o usuário para o URL definido por
+# LOGIN_URL.
+LOGIN_URL = '/users/login/'
+
+# Esse código evita que tenhamos de fazer download da jQuery e colocá-la no
+# lugar correto manualmente.
+# Configurações para django-bootstrap3
+BOOTSTRAP3 = {
+    'include_jquery': True,
+}

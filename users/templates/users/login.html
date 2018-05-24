@@ -1,33 +1,42 @@
 {% extends 'learning_logs/base.html' %}
 
+<!-- Carreagamos as tags de template do bootstrap3 nesse template.-->
+{% load bootstrap3 %}
+
+<!--Definimos o bloco header,que descreve para que serve a página.-->
+{% block header %}
+  <h2>Log in to your account.</h2>
+{% endblock header %}
+
 {% block content %}
-  <!-- Se o atributo erros do formulário estiver definido, exibiremos uma
-       mensagem de erro, informando que a combinação do nome do usuário e a
-       senha não correspondem a nenhum dado armazenado no banco de dados. -->
-  {% if form.erros %}
-    <p>Your username and password didn match. Please try again.</p>
-  {% endif %}
+<!-- Queremos que a view processe o formulário, portanto definimos o
+     argumento action com o URL da página de login. A view de login envia um
+     formulário para o template.
+     Adicionamos um atributo class="form" e então usamos a tag de template
+     'bootstrap_form' quando exibimos a página. Ela substitui a tag
+     'form.as_p'.
+   -->
+<form action="{% url 'users:login' %}" method="post" class="form">
 
-  <!-- Queremos que a view processe o formulário, portanto definimos o
-       argumento action com o URL da página de login. A view de login envia um
-       formulário para o template. -->
-  <form action="{% url 'users:login' %}" method="post">
+  <!-- Django usa o template 'csrf_token' para evitar que invasores usem
+       o formulário a fim de ter acesso não autorizado ao servidor. -->
+  {% csrf_token %}
 
-    <!-- Django usa o template {% csrf_token %} para evitar que invasores usem
-         o formulário a fim de ter acesso não autorizado ao servidor. -->
-    {% csrf_token %}
+  <!--A tag de template  'bootstrap_form' insere as regras de estilo do
+      Bootstrap nos elementos individuais do formulário quando esses são
+      renderizados. -->
+  {% bootstrap_form form %}
 
-    <!-- Cabe a nós exibir o formulário. O modificador as_p, diz ao Django
-         pare renderizar todos os elementos do formulário em formato de
-         parágrafo, que é uma maneira simples de exibir o formulário de modo
-         organizado. -->
-    {{ form.as_p }}
-    
-    <button name="submit">Log in</button>
-    <!-- Incluímos um elemento de formulário oculto, 'next'; o argumento value
-         diz ao Django para onde o usuário será redirecionado depois que tiver
-         feito o login com sucesso. Nesse caso, enviamos o usuário de volta à
-         pagina inicial. -->
-    <input type="hidden" name='next' value="{% url 'learning_logs:index' %}" />
-  </form>
-{% endblock %}
+  <!--Abrimos uma tag de template 'buttons' do bootstrap3, que adiciona a
+      estilização do Bootstrap aos botões.-->
+  {% buttons %}
+    <button name="submit" class="btn btn-primary">Log in</button>
+  {% endbuttons %}
+
+  <!-- Incluímos um elemento de formulário oculto, 'next'; o argumento value
+       diz ao Django para onde o usuário será redirecionado depois que tiver
+       feito o login com sucesso. Nesse caso, enviamos o usuário de volta à
+       pagina inicial. -->
+  <input type="hidden" name='next' value="{% url 'learning_logs:index' %}" />
+</form>
+{% endblock content %}

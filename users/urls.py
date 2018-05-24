@@ -13,8 +13,10 @@ urlpatterns = [
     # users/urls.py, e login lhe diz para enviar requisições à view login
     # default de Django(observe que o argumento da view é login, e não
     # views.login).Como não estamos escrevendo nossa própria função de view,
-    # passamos um dicionário que diz ao Django em que lugar ele poderá encontrar
-    # o template de login. Esse template fará parte da aplicação users, e não de
-    # learning_logs.
+    # passamos um dicionário que diz ao Django em que lugar ele poderá
+    # encontrar o template de login. Esse template fará parte da aplicação
+    # users, e não de learning_logs.
     path('login/', login, {'template_name': 'users/login.html'}, name='login'),
+    path('logout/', views.logout_view, name='logout'),
+    path('register/', views.register, name='register'),
 ]

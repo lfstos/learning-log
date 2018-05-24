@@ -1,0 +1,20 @@
+{% extends "learning_logs/base.html" %}
+
+{% block content %}
+  <form method='post' action="{% url 'users:register' %}">
+
+    <!-- Para evitar que invasores utilizem o formulário para terem acesso não
+         autorizado. -->
+    {% csrf_token %}
+
+    <!-- Faz com que o Django exiba todos os campos do formulário de modo
+         apropriado, incluindo qualquer mensagem de erro caso o formulário não
+         seja preenchido corretamente. -->
+    {{ form.as_p }}
+    <button name='submit'>Register</button>
+
+    <!--  Diz ao Django para onde redirecionar o usuário, após ter feito o login
+          com sucesso. -->
+    <input type="hidden" name='next' value="{% url 'learning_logs:index' %}" />
+  </form>
+{% endblock content %}
